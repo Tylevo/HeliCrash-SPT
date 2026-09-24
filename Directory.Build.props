@@ -2,11 +2,11 @@
   <Import Project="SharedConfiguration/Shared.props" />
   <PropertyGroup>
     <TargetSptVersion>4.0.3</TargetSptVersion>
-    <Authors>Arys</Authors>
-    <Copyright>Copyright © SamSWAT, Arys 2025</Copyright>
+    <Authors>SamSWAT, Arys, Tylevo</Authors>
+    <Copyright>Copyright © SamSWAT, Arys 2025; Tylevo 2026</Copyright>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;SPT-3.10 Release;SPT-3.11 Release;SPT-4.0 Release;SPT-4.1 Release</Configurations>
-    <SolutionName>SamSWAT.HeliCrash.ArysReloaded</SolutionName>
+    <SolutionName>Tylevo.HeliCrash</SolutionName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>Build\Debug\</OutputPath>

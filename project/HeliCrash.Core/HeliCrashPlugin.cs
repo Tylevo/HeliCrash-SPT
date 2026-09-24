@@ -5,22 +5,22 @@ using BepInEx.Bootstrap;
 namespace SamSWAT.HeliCrash.ArysReloaded;
 
 [BepInPlugin(
-    "com.samswat.helicrash.arysreloaded",
-    "SamSWAT's HeliCrash: Arys Reloaded - Core",
+    "com.tylevo.helicrash",
+    "Tylevo HeliCrash",
     ModMetadata.VERSION
 )]
 [BepInDependency("com.SPT.core", ModMetadata.TARGET_SPT_VERSION)]
 [BepInDependency("com.arys.unitytoolkit", "2.0.2")]
 [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(
-    "com.samswat.helicrash.arysreloaded.fika",
+    "com.samswat.helicrash.arysreloaded",
     BepInDependency.DependencyFlags.SoftDependency
 )]
 public class HeliCrashPlugin : BaseUnityPlugin
 {
     private void Awake()
     {
-        RejectUnsupportedFika();
+        RejectUnsupportedInstall();
 
         new InitializeApplicationLifetimeScopePatch(this, Logger, gameObject).Enable();
 
@@ -28,12 +28,19 @@ public class HeliCrashPlugin : BaseUnityPlugin
         PostAwake = null;
     }
 
-    private static void RejectUnsupportedFika()
+    private static void RejectUnsupportedInstall()
     {
+        if (Chainloader.PluginInfos.ContainsKey("com.samswat.helicrash.arysreloaded"))
+        {
+            throw new NotSupportedException(
+                "Tylevo HeliCrash replaces Arys Reloaded Core. Remove the older HeliCrash plugin before using this standalone release."
+            );
+        }
+
         if (Chainloader.PluginInfos.ContainsKey("com.fika.core"))
         {
             throw new NotSupportedException(
-                "HeliCrash Core 2.6.0 supports solo SPT 4.1.5 only. Fika Sync has not been ported; disable HeliCrash when using Fika."
+                "Tylevo HeliCrash 2.6.0 supports solo SPT 4.1.5 only. Fika Sync has not been ported; disable HeliCrash when using Fika."
             );
         }
     }
