@@ -8,4 +8,8 @@ Remove an existing `BepInEx/plugins/SamSWAT.HeliCrash.ArysReloaded/` installatio
 
 Fika Sync has not been ported to SPT 4.1.5 and is not included. The Core plugin reports the unsupported Fika combination instead of running unsynchronized in co-op. The planned pilot, guards, loadouts, and AI are not part of this release.
 
+## Validation status
+
+Core builds against SPT 4.1.5 and UnityToolkit 2.0.2, the archive passes integrity checking, and the plugin loads without BepInEx errors in an isolated 4.1.5 client. A full raid could not be entered with the dummy test ID. Spawn and loot chance extremes, configured map sites, smoke, doors, crate interaction, raid re-entry, ordinary airdrop loot, and the Fika diagnostic still need in-game checks. This release is marked as a prerelease until those checks are complete.
+
 Credits remain with SamSWAT for the original mod and Arys for Arys Reloaded. See [LICENSE](LICENSE) for the repository license.

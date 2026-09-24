@@ -2,6 +2,8 @@
 
 **Core v2.6.0 targets solo SPT 4.1.5.** This is the standalone `Tylevo/HeliCrash-SPT` project, using the plugin ID `com.tylevo.helicrash`. The Fika Sync add-on has not been ported for this release; this Core build refuses to load when Fika is detected. Bosses, guards, and their AI are planned separately and are not included.
 
+This is a prerelease for in-raid testing. The plugin loads cleanly in an isolated 4.1.5 client; crash-site behavior still needs a full raid check.
+
 ## What it does
 
 The mod places a UH-60 Blackhawk crash site at a random configured location after raid loading. The helicopter has smoke, interactive doors, a navigation obstacle, and an optional loot crate. The crate uses SPT's airdrop loot generation, so changes to that loot pool also affect the crate. The default crash chance is 10%; crash and loot chances are configurable from 0% to 100%. `HeliCrashLocations.json` contains the map locations and can be edited without changing its existing format.
