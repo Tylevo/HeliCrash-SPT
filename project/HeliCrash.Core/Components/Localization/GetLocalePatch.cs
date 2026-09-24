@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using EFT;
 using HarmonyLib;
 using JetBrains.Annotations;
 using SamSWAT.HeliCrash.ArysReloaded.Utils;
@@ -28,7 +29,7 @@ public class GetLocalePatch : ModulePatch
 
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(LocaleClass), nameof(LocaleClass.ReloadBackendLocale));
+        return AccessTools.Method(typeof(DataPrepareOperation), nameof(DataPrepareOperation.ReloadBackendLocale));
     }
 
     [PatchPostfix]
@@ -44,7 +45,7 @@ public class GetLocalePatch : ModulePatch
         catch (Exception ex)
         {
             s_logger.LogError(
-                $"Error patching {nameof(LocaleClass.ReloadBackendLocale)}: {ex.Message}\n{ex.StackTrace})"
+                $"Error patching {nameof(DataPrepareOperation.ReloadBackendLocale)}: {ex.Message}\n{ex.StackTrace})"
             );
         }
     }

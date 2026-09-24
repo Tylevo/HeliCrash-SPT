@@ -10,7 +10,7 @@ namespace SamSWAT.HeliCrash.ArysReloaded;
     ModMetadata.VERSION
 )]
 [BepInDependency("com.SPT.core", ModMetadata.TARGET_SPT_VERSION)]
-[BepInDependency("com.arys.unitytoolkit", "2.0.1")]
+[BepInDependency("com.arys.unitytoolkit", "2.0.2")]
 [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(
     "com.samswat.helicrash.arysreloaded.fika",
@@ -20,7 +20,7 @@ public class HeliCrashPlugin : BaseUnityPlugin
 {
     private void Awake()
     {
-        DetectFikaAddon();
+        RejectUnsupportedFika();
 
         new InitializeApplicationLifetimeScopePatch(this, Logger, gameObject).Enable();
 
@@ -28,16 +28,12 @@ public class HeliCrashPlugin : BaseUnityPlugin
         PostAwake = null;
     }
 
-    private static void DetectFikaAddon()
+    private static void RejectUnsupportedFika()
     {
-        bool fikaDetected = Chainloader.PluginInfos.ContainsKey("com.fika.core");
-        bool fikaAddonDetected = Chainloader.PluginInfos.ContainsKey(
-            "com.samswat.helicrash.arysreloaded.fika"
-        );
-        if (fikaDetected && !fikaAddonDetected)
+        if (Chainloader.PluginInfos.ContainsKey("com.fika.core"))
         {
-            throw new DllNotFoundException(
-                "Fika is detected but HeliCrash's Fika Sync is not installed. Please install the Fika Sync!"
+            throw new NotSupportedException(
+                "HeliCrash Core 2.6.0 supports solo SPT 4.1.5 only. Fika Sync has not been ported; disable HeliCrash when using Fika."
             );
         }
     }

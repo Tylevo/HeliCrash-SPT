@@ -51,7 +51,7 @@ public class LootContainerFactory(
 
             GameWorld gameWorld = Singleton<GameWorld>.Instance;
 
-            if (gameWorld.World_0 != null)
+            if (gameWorld.World != null)
             {
                 gameWorld.RegisterWorldInteractionObject(container);
             }
@@ -98,11 +98,11 @@ public class LootContainerFactory(
         CancellationToken cancellationToken
     )
     {
-        await Singleton<PoolManagerClass>.Instance.LoadBundlesAndCreatePools(
-            PoolManagerClass.PoolsCategory.Raid,
-            PoolManagerClass.AssemblyType.Local,
+        await Singleton<ObjectsFactory>.Instance.LoadBundlesAndCreatePools(
+            ObjectsFactory.PoolsCategory.Raid,
+            ObjectsFactory.AssemblyType.Local,
             resourceKeys,
-            JobPriorityClass.Immediate,
+            Diz.Jobs.JobYieldPriority.Immediate,
             ct: cancellationToken
         );
     }
@@ -139,7 +139,7 @@ public class LootContainerFactory(
 
             AirdropLootResponse lootResponse = (
                 await (
-                    (ProfileEndpointFactoryAbstractClass)
+                    (ClientBackendSession)
                         ClientAppUtils.GetClientApp().GetClientBackEndSession()
                 )
                     .LoadLootContainerData(null)
@@ -160,7 +160,7 @@ public class LootContainerFactory(
                 );
             }
 
-            Item containerItem = Singleton<ItemFactoryClass>
+            Item containerItem = Singleton<ItemFactory>
                 .Instance.FlatItemsToTree(lootResponse.data)
                 .Items[lootResponse.data[0]._id];
 

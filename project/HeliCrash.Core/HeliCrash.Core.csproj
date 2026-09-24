@@ -6,7 +6,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
-    <CopyToOutputDir>$(MSBuildThisFileDirectory)CopyToOutput</CopyToOutputDir>
+    <CopyToOutputDir>$(MSBuildThisFileDirectory)CopyToOutput\</CopyToOutputDir>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -74,15 +74,23 @@
     <None Remove="build\**" />
     <Compile Remove="build\**" />
     <EmbeddedResource Remove="build\**" />
+    <CoreAsset Include="$(CopyToOutputDir)*" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec
-      Command="if not exist &quot;$(SptBepInExPluginsDir)$(SolutionName)&quot; (&#xA;    mkdir &quot;$(SptBepInExPluginsDir)$(SolutionName)&quot;&#xA;)&#xA;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SptBepInExPluginsDir)$(SolutionName)\$(TargetFileName)&quot;&#xA;xcopy /y &quot;$(CopyToOutputDir)&quot; &quot;$(SptBepInExPluginsDir)$(SolutionName)\&quot;"
-    />
+  <Target Name="DeployCoreToSpt" AfterTargets="Build" Condition="'$(DeployToSpt)' == 'true'">
+    <MakeDir Directories="$(SptBepInExPluginsDir)$(SolutionName)" />
+    <Copy SourceFiles="$(TargetPath);@(CoreAsset)" DestinationFolder="$(SptBepInExPluginsDir)$(SolutionName)" />
   </Target>
-  <Target Name="CreateMainReleaseZip" AfterTargets="PostBuild">
-    <Exec
-      Command="if not &quot;$(ConfigurationName)&quot;==&quot;Debug&quot; (&#xA;    cd /D &quot;$(SptBepInExPluginsDir)..\..\&quot;&#xA;    &quot;C:\Program Files\7-Zip\7z.exe&quot; a &quot;$(ReleaseArchivePath)&quot; &quot;BepInEx\plugins\$(SolutionName)\*&quot; -xr!$(SolutionName).Fika.dll&#xA;)"
-    />
+  <Target Name="CreateMainReleaseZip" AfterTargets="Build" Condition="'$(CreateReleaseArchive)' == 'true'">
+    <PropertyGroup>
+      <ReleaseStageDir>$(BaseIntermediateOutputPath)release\</ReleaseStageDir>
+      <ReleasePluginDir>$(ReleaseStageDir)BepInEx\plugins\$(SolutionName)\</ReleasePluginDir>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(CopyToOutputDir)sikorsky_uh60_blackhawk.bundle')" Text="Extract sikorsky_uh60_blackhawk.bundle from mod/SamSWAT.HeliCrash/Assets.7z into $(CopyToOutputDir) before packaging." />
+    <RemoveDir Directories="$(ReleaseStageDir)" />
+    <MakeDir Directories="$(ReleasePluginDir);$(DistributionDir)" />
+    <Copy SourceFiles="$(TargetPath);@(CoreAsset)" DestinationFolder="$(ReleasePluginDir)" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\LICENSE;$(MSBuildThisFileDirectory)..\..\RELEASE_NOTES.md" DestinationFolder="$(ReleasePluginDir)" />
+    <Delete Files="$(ReleaseArchivePath)" />
+    <Exec WorkingDirectory="$(ReleaseStageDir)" Command="&quot;C:\Program Files\7-Zip\7z.exe&quot; a -t7z &quot;$(ReleaseArchivePath)&quot; &quot;BepInEx\plugins\$(SolutionName)\*&quot;" />
   </Target>
 </Project>

@@ -1,37 +1,44 @@
-# HelicopterCrashSites
+# SamSWAT's Helicopter Crash Sites: Arys Reloaded
 
-DayZ inspired
+**Core v2.6.0 targets solo SPT 4.1.5.** The Fika Sync add-on has not been ported for this release; this Core build refuses to load when Fika is detected. Bosses, guards, and their AI are planned separately and are not included.
 
-## Overview
-Credits go to SamSWAT for the original creation of this mod! https://dev.sp-tarkov.com/SamSWAT/HelicopterCrashSites & https://hub.sp-tarkov.com/files/file/659-helicopter-crash-sites
+## What it does
 
-## Overview
+The mod places a UH-60 Blackhawk crash site at a random configured location after raid loading. The helicopter has smoke, interactive doors, a navigation obstacle, and an optional loot crate. The crate uses SPT's airdrop loot generation, so changes to that loot pool also affect the crate. The default crash chance is 10%; crash and loot chances are configurable from 0% to 100%. `HeliCrashLocations.json` contains the map locations and can be edited without changing its existing format.
 
-BepInEx plugin that will add random helicopter crash sites. The initial chance is 10%, but it can be adjusted in the configuration manager (`F12` key) or alternatively, if you've launched up the game at least once with this mod, you can find the `com.SamSWAT.HeliCrash.ArysReloaded.cfg` file in your `BepInEx/config/` folder and change value there.
+## Install
 
-If you were lucky, after loading into the raid you may find downed UH-60 Blackhawk by thick column of smoke, its position is random and choosed from `HeliCrashLocations.json` file, here you can add your own locations or delete them. There should be a container with loot at the rear of the helicopter, currently, because of some limitations, it's just a copy of what was generated for the airdrop so technically there's no way to alter what will be in the container without affecting airdrops.
+1. Use a **solo SPT 4.1.5** installation.
+2. Install [UnityToolkit 2.0.2 for SPT 4.1.5](https://sp-mod.com/mod/1426/unitytoolkit) into that installation according to its instructions. UnityToolkit is a separate, required dependency and is not bundled with HeliCrash.
+3. Extract `SamSWAT.HeliCrash.ArysReloaded.CORE-v2.6.0-SPT4.1.5.7z` into the SPT installation root, preserving its `BepInEx/plugins/SamSWAT.HeliCrash.ArysReloaded/` layout. The folder should contain the Core DLL, `HeliCrashLocations.json`, `Locales.jsonc`, `sikorsky_uh60_blackhawk.bundle`, license, and release notes.
+4. Start a solo raid. After the first launch, adjust the generated BepInEx config or use BepInEx ConfigurationManager, if installed. The advanced **Spawn All Crash Sites** setting is intended for location debugging.
 
-## How to install
+Do not install the older Fika Sync DLL with this release. Co-op crash-site synchronization is outside the scope of Core v2.6.0.
 
-1. Download the latest release here: [link](https://hub.sp-tarkov.com/files/file/1804-samswat-s-helicopter-crash-sites-arys-reloaded/#versions) -OR- build from source (instructions below)
-2. Extract the zip file and drop the `BepInEx` folder into your SPT install folder (overwrite/merge if asked by Windows)
+## Build Core from source
 
-## Preview
+Requirements: the .NET SDK, an SPT 4.1.5 installation with UnityToolkit 2.0.2 installed, and 7-Zip if creating a release archive. Build the **Core project**, not the solution, because the Fika project has not been ported.
 
-![preview](https://media.discordapp.net/attachments/417281262085210112/972622826160930866/Escape_from_Tarkov_2022.04.27-17.43_1.png)
+1. Clone the repository, including its shared configuration submodule: `git submodule update --init --recursive`.
+2. Create the ignored local file `SharedConfiguration/Shared.User.props` with the SPT installation path, including the trailing backslash:
 
-## Requirements
+   ```xml
+   <Project>
+     <PropertyGroup>
+       <SptDir>D:\SPT4.1.5\</SptDir>
+     </PropertyGroup>
+   </Project>
+   ```
 
-- Visual Studio (.NET desktop workload) or JetBrains Rider
-- .NET Standard 2.1
-- A text editor (VSCode highly recommended)
+3. Extract `sikorsky_uh60_blackhawk.bundle` from `mod/SamSWAT.HeliCrash/Assets.7z` into `project/HeliCrash.Core/CopyToOutput/` beside the location and locale files.
+4. Build the Core project:
 
-## How to build from source
+   ```powershell
+   dotnet build project/HeliCrash.Core/HeliCrash.Core.csproj -c "SPT-4.1 Release" -p:CreateReleaseArchive=true
+   ```
 
-1. Download/clone this repository
-2. Open `project/SamSWAT.HeliCrash/SamSWAT.HeliCrash.ArysReloaded.csproj` in a text editor (VSCode highly recommended)
-3. Modify the project macros to suit your needs (read the comments!!!) and save
-4. Extract `sikorsky_uh60_blackhawk.bundle` from `mod/SamSWAT.HeliCrash/Assets.7z` to `project/SamSWAT.HeliCrash/CopyToOutput`
-5. VS2022 > File > Open solution > `SamSWAT.HeliCrash.sln`
-6. VS2022 > Build > Rebuild solution (if your project macros are set up correctly, the built mod will be correctly copied to your SPT `BepInEx/plugins` folder)
-7. Run SPT
+The archive is written to `Distributions/SamSWAT.HeliCrash.ArysReloaded.CORE-v2.6.0-SPT4.1.5.7z`. Building does not copy files into the SPT installation by default. To deploy to the configured local installation explicitly, add `-p:DeployToSpt=true` to the build command.
+
+## Credits and license
+
+SamSWAT created the [original Helicopter Crash Sites mod](https://dev.sp-tarkov.com/SamSWAT/HelicopterCrashSites), and Arys created Arys Reloaded. This port retains their attribution. The repository's [Creative Commons Attribution-NonCommercial 4.0 license](LICENSE) applies.
